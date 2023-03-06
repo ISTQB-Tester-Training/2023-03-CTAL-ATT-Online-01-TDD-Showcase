@@ -1,0 +1,74 @@
+// In Datei TimePairTest.java
+
+package tddshowcasetestpackage;
+
+import tddshowcasepackage.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class TimePairTest {
+
+    TimePair aTimePair = new TimePair();
+
+    @Test
+    public void timeDifferenceTest_1h () {
+        assertEquals(1.0, aTimePair.getTimeDifference("10:00", "11:00"), 0.0);
+    }
+
+    @Test
+    public void timeDifferenceTest_0h () {
+        assertEquals(0.0, aTimePair.getTimeDifference("10:00", "10:00"), 0.0);
+    }
+
+   @Test
+    public void timeDifferenceTest_invalidStartTimeFormat() {
+
+        TimePair.TimePairException aTimePairException = assertThrows(TimePair.TimePairException.class,
+                () -> aTimePair.getTimeDifference("XX:00", "11:00"));
+
+        assertEquals(501, (long) aTimePairException.getMessageNr());
+        System.out.println("Error Number: " + aTimePairException.getMessageNr() + " " +
+                           "Error text: " + aTimePairException.getMessageText());
+    }
+}
+
+// --------------------------------------------
+
+// In Datei TimePair.java
+
+package tddshowcasepackage;
+
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+
+public class TimePair {
+
+    public double getTimeDifference(String strStartTime, String strEndTime) {
+
+        try {
+            LocalTime checkStartTime = LocalTime.parse(strStartTime);
+        }
+        catch (Exception e) {
+            throw new TimePairException(e.getMessage() + "(Input value: " + strStartTime + ")", 501);
+        }
+
+        return LocalTime.parse(strStartTime).until(LocalTime.parse(strEndTime), ChronoUnit.MINUTES)/60.0;
+    }
+
+    public static class TimePairException extends RuntimeException {
+        private final String message;
+        private final Long messageNr;
+
+        public TimePairException (String argMessage, long argMessageNr) {
+            super(argMessage);
+            message = argMessage;
+            messageNr = argMessageNr;
+        }
+        public String getMessageText() {
+            return message;
+        }
+        public Long getMessageNr() {
+            return messageNr;
+        }
+    }
+}

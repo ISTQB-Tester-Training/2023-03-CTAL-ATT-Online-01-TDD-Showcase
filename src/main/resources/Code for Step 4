@@ -1,0 +1,14 @@
+// In Datei TimePair.java
+
+package tddshowcasepackage;
+
+import java.time.*;
+import java.time.temporal.ChronoUnit;
+
+public class TimePair {
+
+    public double getTimeDifference(String strStartTime, String strEndTime) {
+
+        return LocalTime.parse(strStartTime).until(LocalTime.parse(strEndTime), ChronoUnit.MINUTES)/60.0;
+    }
+}
